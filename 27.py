@@ -15,17 +15,14 @@ def quadratic_primes():
         max_primes = primes
         max_primes_vars = {"a" : a, "b" : b}
         print (max_primes, max_primes_vars)
-
   return (max_primes_vars['a'] * max_primes_vars['b'])
 
 def isprime(n):
-  prime = True
   if n <=1: return False
   for i in range(2, int(n/2)):
     if n % i == 0 and n != i:
-      prime = False
-      break
-  return prime
+      return False
+  return True
 
 from utils import call
 call(quadratic_primes)
