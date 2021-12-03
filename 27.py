@@ -21,7 +21,7 @@ def quadratic_primes():
 def isprime(n):
   prime = True
   if n <=1: return False
-  for i in range(2, 3000):
+  for i in range(2, int(n/2)):
     if n % i == 0 and n != i:
       prime = False
       break
