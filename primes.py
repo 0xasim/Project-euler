@@ -13,11 +13,11 @@ def sieveOfErotosthenes(n):
 import math
 def lsieveOfErotosthenes(n):
   primes = [True for i in range(2, n)]
-  for i in range(2, int(math.sqrt(n))):
+  for i in range(2, int(math.sqrt(n) + 1)):
     if i >= len(primes)-1: break
     tl = [res for v in range(n) if (res := i**2 + v*i) < n]
     for j in tl: primes[j-2] = False
-  return {ki+2 for ki, k in enumerate(primes) if k is True}
+  return ({ki+2 for ki, k in enumerate(primes) if k is True})
 
 class isprime:
   def __init__(self, n, method = 'trialDiv'):
@@ -37,10 +37,11 @@ class isprime:
 
 if __name__ == '__main__':
   from utils import call
-  lim = 10**2
+  lim = 10**3
   ret1 = call(sieveOfErotosthenes, lim, pout=False)
   ret2 = call(lsieveOfErotosthenes, lim, pout=False)
+  print(ret1, len(ret1))
+  print(ret2, len(ret2))
   assert ret1 == ret2
 
-  r = call(isprime, 1235325343)
-  print(r.bool)
+  print(isprime(4134514531).bool)
