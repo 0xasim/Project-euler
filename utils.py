@@ -6,9 +6,11 @@ def timeMe(f, *args):
   _t1 = time.time() 
   return (_t1 - _t0, retval)
   
-def call(func, *args):
+def call(func, *args, pout=True):
   _t, retval = timeMe(func, *args)
-  print(f"Function: {func.__name__}\n\tInput:\t{args}\n\tOutput:\t{retval}\n\tExecution time: {_t}\n")
+  pval = retval
+  if not pout: pval = ''
+  print(f"Function: {func.__name__}\n\tInput:\t{args}\n\tOutput:\t{pval}\n\tExecution time: {_t}\n")
   return retval
 
 def callDec(func):
