@@ -15,7 +15,7 @@ def lsieveOfErotosthenes(n):
   primes = [True for i in range(n)]
   primes[0], primes[1] = False, False
   for i in range(2, int(math.sqrt(n) + 1)):
-    if primes[i] == True:
+    if primes[i]:
       tl = [j for v in range(n) if (j := i**2 + v*i) < n]
       for j in tl: primes[j] = False
   return ({ki for ki, k in enumerate(primes) if k is True})
@@ -39,10 +39,8 @@ class isprime:
 if __name__ == '__main__':
   from utils import call
   lim = 10**5
-  ret1 = call(sieveOfErotosthenes, lim, pout=False)
   ret2 = call(lsieveOfErotosthenes, lim, pout=False)
-  print(ret1)
-  print(ret2)
+  ret1 = call(sieveOfErotosthenes, lim, pout=False)
   assert ret1 == ret2
 
   print(isprime(4134514531).bool)
