@@ -37,11 +37,9 @@ class isprime:
 
 if __name__ == '__main__':
   from utils import call
-  lim = 10**3
+  lim = 10**5
   ret1 = call(sieveOfErotosthenes, lim, pout=False)
   ret2 = call(lsieveOfErotosthenes, lim, pout=False)
-  print(ret1, len(ret1))
-  print(ret2, len(ret2))
   assert ret1 == ret2
 
   print(isprime(4134514531).bool)
