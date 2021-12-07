@@ -2,14 +2,13 @@
 def consDPF(nf):
   i = 0
   while True:
-    if all([len(set(factorize(c))) == nf for c in range(i, i + nf)]):
+    if all([len(set(distFactors(c))) == nf for c in range(i, i + nf)]):
       return [i+a for a in range(nf)]
     i += 1
 
 import functools
 @functools.cache
-def factorize(n: int):
-  sortedSP = sorted(sieve_primes)
+def distFactors(n: int):
   fs = list()
   for i in sortedSP:
     if n % i == 0:
@@ -28,4 +27,5 @@ def primeSieve(stop: int):
    
 from utils import call
 sieve_primes = set(call(primeSieve, int(1e3), pout=False))
+sortedSP = sorted(sieve_primes)
 call(consDPF, 4)
