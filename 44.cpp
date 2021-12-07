@@ -4,6 +4,8 @@ using namespace std;
 
 unsigned int* x(int lim){
   unsigned int* pantagonals = new unsigned int[lim];
+  //unsigned int pantagonals[lim];
+  
   for(int n = 1; n < lim; n++){
     pantagonals[n] = n * (3 * n - 1) / 2;
   }
