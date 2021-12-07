@@ -1,4 +1,4 @@
-# Consecutive DPS
+# Consecutive DPF
 def consDPF(nf):
   i = 0
   while True:
@@ -6,6 +6,7 @@ def consDPF(nf):
       return [i+a for a in range(nf)]
     i += 1
 
+# Distinct Prime Factors (DPF)
 import functools
 @functools.cache
 def distFactors(n: int):
@@ -13,8 +14,10 @@ def distFactors(n: int):
   for i in sortedSP:
     if n % i == 0:
       fs.append(i)
+      n /= i
   return fs
 
+# Sieve of Eratosthenes
 import math
 def primeSieve(stop: int):
   pool = [True for _ in range(stop)]
@@ -24,8 +27,9 @@ def primeSieve(stop: int):
       jays = (j for x in range(stop) if (j:= i**2 + x*i) < stop)
       for j in jays: pool[j] = False
   return [zi for zi, z in enumerate(pool) if z]
-   
-from utils import call
-sieve_primes = set(call(primeSieve, int(1e3), pout=False))
-sortedSP = sorted(sieve_primes)
-call(consDPF, 4)
+
+if __name__ == '__main__':
+  from utils import call
+  sieve_primes = set(call(primeSieve, int(1e3), pout=False))
+  sortedSP = sorted(sieve_primes)
+  call(consDPF, 4)
