@@ -1,12 +1,13 @@
 from utils import call
-from primes import lsieveOfErotosthenes
+import itertools
+from primes import *
 
 def getPrimes(lim):
   global primes, sprimes
-  primes = call(lsieveOfErotosthenes, lim, pout=False)
-  sp = sorted(primes)
-  n = next(x[0] for x in enumerate(sp) if sum(sp[:x[0]+1]) > lim)
-  sprimes = sp[:n + 1]
+  sprimes = list(itertools.takewhile(lambda x: x < lim, gen_primes()))
+  primes = set(sprimes)
+  n = next(x[0] for x in enumerate(sprimes) if sum(sprimes[:x[0]+1]) > lim)
+  sprimes = sprimes[:n + 1]
 
 def euler50():
   gl, gs = 0, list()
@@ -18,7 +19,6 @@ def euler50():
       seq.append(nex)
       if sum(seq) in primes and len(seq) > gl:
         gl, gs = len(seq), seq[:]
-        print(p, gl, sum(gs))
   return (gl, sum(gs))
 
 call(getPrimes, 10**6)
