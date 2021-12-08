@@ -12,8 +12,7 @@ def primePerm(n: int):
           if u not in p1Perms:
             break
         else:
-          print(pset)
-          print(''.join([str(s) for s in pset]))
+          print(pset, ''.join([str(s) for s in pset]))
 
 import math
 def primeSieve(l: int):
