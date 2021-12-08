@@ -1,5 +1,7 @@
 # https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
 # Use th algorithm above to get primes and not your bruteforce method
+import itertools
+import math
 
 def sieveOfErotosthenes(n):
   primes = {i for i in range(2, n)}
@@ -10,7 +12,6 @@ def sieveOfErotosthenes(n):
     p = min([i for i in primes if i > p])
   return primes
 
-import math
 def lsieveOfErotosthenes(n):
   primes = [True for i in range(n)]
   primes[0], primes[1] = False, False
@@ -21,38 +22,51 @@ def lsieveOfErotosthenes(n):
   return ({ki for ki, k in enumerate(primes) if k is True})
 
 def gen_primes():
-  """ Generate an infinite sequence of prime numbers.
-  """
-  # Maps composites to primes witnessing their compositeness.
-  # This is memory efficient, as the sieve is not "run forward"
-  # indefinitely, but only as long as required by the current
-  # number being tested.
-  #
   D = {}
-
-  # The running integer that's checked for primeness
-  q = 2
-
+  q = 2  # first integer to test for primality.
   while True:
     if q not in D:
-      # q is a new prime.
-      # Yield it and mark its first multiple that isn't
-      # already marked in previous iterations
-      # 
-      yield q
-      D[q * q] = [q]
+      # not marked composite, must be prime  
+      yield q 
+      #first multiple of q not already marked
+      D[q * q] = [q] 
     else:
-      # q is composite. D[q] is the list of primes that
-      # divide it. Since we've reached q, we no longer
-      # need it in the map, but we'll mark the next 
-      # multiples of its witnesses to prepare for larger
-      # numbers
-      #
       for p in D[q]:
         D.setdefault(p + q, []).append(p)
+      # no longer need D[q], free memory
       del D[q]
-
     q += 1
+
+# https://stackoverflow.com/a/19391111
+def psieve():
+  yield from (2, 3, 5, 7)
+  D = {}
+  ps = psieve()
+  next(ps)
+  p = next(ps)
+  assert p == 3
+  psq = p*p
+  for i in itertools.count(9, 2):
+    if i in D:      # composite
+      step = D.pop(i)
+    elif i < psq:   # prime
+      yield i
+      continue
+    else:           # composite, = p*p
+      assert i == psq
+      step = 2*p
+      p = next(ps)
+      psq = p*p
+    i += step
+    while i in D:
+        i += step
+    D[i] = step
+
+gen_primes_list = lambda lim: list(itertools.takewhile(lambda x: x < lim, gen_primes()))
+gen_n_primes = lambda n: [p for i, p in zip(range(n), gen_primes())]
+
+psieve_list = lambda lim: list(itertools.takewhile(lambda x: x < lim, psieve()))
+psieve_n = lambda n: [p for i, p in zip(range(n), psieve())]
 
 class isprime:
   def __init__(self, n, method = 'trialDiv'):
@@ -73,8 +87,15 @@ class isprime:
 if __name__ == '__main__':
   from utils import call
   lim = 10**5
+
   ret2 = call(lsieveOfErotosthenes, lim, pout=False)
   ret1 = call(sieveOfErotosthenes, lim, pout=False)
-  assert ret1 == ret2
+
+  old = call(gen_n_primes, lim, pout=False)
+  new = call(psieve_n, lim, pout=False)
+
+  print(len(ret1), len(ret2), len(old), len(new))
+  assert ret1 == ret2 == old == new
 
   print(isprime(4134514531).bool)
+
