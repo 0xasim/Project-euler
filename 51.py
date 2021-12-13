@@ -10,12 +10,13 @@ for i in itertools.count(10):  # e-g: 3817
   for n in range(1, len(str(i))): # 1, 2 and 3 char positions to replace
     curri = 0
     for d in range(10): # 0-9
-      places = list(itertools.combinations(list(str(i)), len(str(i))))
+      places = list(itertools.combinations([int(ph) for ph in str(i)], d))
       print(i, places)
       for ep in places: # [0 1 2], [0 1 3], [0 2 3], ....,[1 2 3]
-        print('here')
+        tna = int(''.join([str(xdc) for xdc in na]))
         na[list(ep)] = [d]*n
-        if(int(na) in primeslist): current += 1
+        print(tna)
+        if(tna in primeslist): curri += 1
 
   if curri > big_i:
     big_i = curri
