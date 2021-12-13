@@ -2,16 +2,19 @@
 # Use th algorithm above to get primes and not your bruteforce method
 import itertools
 import math
+#import numba
 
 def sieveOfErotosthenes(n):
   primes = {i for i in range(2, n)}
   p = 2
   while p < max(primes):
     for j in range(2, len(primes)):
-      if ((prod := j*p) in primes): primes.remove(prod)
+      if ((prod := j*p) in primes):
+        primes.remove(prod)
     p = min([i for i in primes if i > p])
   return primes
 
+#@numba.jit
 def lsieveOfErotosthenes(n):
   primes = [True for i in range(n)]
   primes[0], primes[1] = False, False
@@ -38,6 +41,7 @@ def gen_primes():
     q += 1
 
 # https://stackoverflow.com/a/19391111
+# https://stackoverflow.com/a/10733621
 def psieve():
   yield from (2, 3, 5, 7)
   D = {}
@@ -63,10 +67,10 @@ def psieve():
     D[i] = step
 
 gen_primes_list = lambda lim: list(itertools.takewhile(lambda x: x < lim, gen_primes()))
-gen_n_primes = lambda n: [p for i, p in zip(range(n), gen_primes())]
+gen_n_primes = lambda n: [p for _, p in zip(range(n), gen_primes())]
 
 psieve_list = lambda lim: list(itertools.takewhile(lambda x: x < lim, psieve()))
-psieve_n = lambda n: [p for i, p in zip(range(n), psieve())]
+psieve_n = lambda n: [p for _, p in zip(range(n), psieve())]
 
 class isprime:
   def __init__(self, n, method = 'trialDiv'):
@@ -88,8 +92,8 @@ if __name__ == '__main__':
   from utils import call
   lim = 10**5
 
-  ret2 = call(lsieveOfErotosthenes, lim, pout=False)
   ret1 = call(sieveOfErotosthenes, lim, pout=False)
+  ret2 = call(lsieveOfErotosthenes, lim, pout=False)
 
   old = call(gen_n_primes, lim, pout=False)
   new = call(psieve_n, lim, pout=False)
