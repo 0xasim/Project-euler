@@ -13,13 +13,14 @@ def prime_dig_replace(primeslist, lim=8):
         drange = range(10)
         if ep[0] == 0: drange = range(1,10) 
         for d in drange:
+          if d >= 3 and num_of_primes < 2: break
           tna = na.copy()
           tna[list(ep)] = [d]*replace_count
           tnum = int(''.join([str(tt) for tt in tna]))
           if tnum in primeslist:
             num_of_primes += 1
             plist.append(tnum)
-        if num_of_primes == lim:
+        if num_of_primes >= lim:
           return min(plist)
 
 from utils import call
