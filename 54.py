@@ -1,7 +1,6 @@
-import numpy as np
-
 kinds = '123456789JQKA' # 13 Kinds
 suits = 'CDHS'          # 04 Suits
+
 def rank_a_hand(hand, h0, h1):
   sh0, sh1 = sorted(h0), sorted(h1)
   # 22, Royal flush       | 0 : not possible because there is no 10
@@ -43,6 +42,7 @@ def highV(h0):
   return [l[0] for l in enumerate(kinds) if l[1] in h0][-1]
 print(highV(['5','3']) > highV(['J', 'Q']))
 
+import numpy as np
 def highCardV(p1h0, p2h0):
   for k in kinds:
     p1i, p1 = [k for k in enumerate(kinds) if k[1] in p1h0][-1]
