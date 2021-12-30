@@ -3,9 +3,9 @@ suits = 'CDHS'          # 04 Suits
 
 def rank_a_hand(hand, h0, h1):
   sh0, sh1 = sorted(h0), sorted(h1)
-  # 22, Royal flush       | 0 : not possible because there is no 10
+  # 22, Royal flush       | 0 | not possible because there is no 10
 
-  # 21, Straight flush    | 0 
+  # 21, Straight flush    | 0 |
   if all([o.isnumeric() for o in h0]) and int(sh0[-1]) == int(sh0[0]) + 4\
       and any([all([p == q for p in sh1]) for q in suits]):
     return [21]
@@ -41,6 +41,7 @@ def rank_a_hand(hand, h0, h1):
     if len(pair := [s for s in sh0 if s == c]) == 2:
       return [14, kinds.index(pair[0])]
   # 0-12, highest card    | 482 + 362 + 287 + 190 + 148 + 119 + 88 + 68 + 69 + 68 + 64 + 
+  #                             | essentially doing what highCardV does
   return [[hcard[0] for hcard in enumerate(kinds) if hcard[1] in sh0][-1]]
 
 def highV(h0):
