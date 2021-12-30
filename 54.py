@@ -4,35 +4,42 @@ suits = 'CDHS'          # 04 Suits
 def rank_a_hand(hand, h0, h1):
   sh0, sh1 = sorted(h0), sorted(h1)
   # 22, Royal flush       | 0 : not possible because there is no 10
+
   # 21, Straight flush    | 0 
   if all([o.isnumeric() for o in h0]) and int(sh0[-1]) == int(sh0[0]) + 4\
       and any([all([p == q for p in sh1]) for q in suits]):
     return [21]
-  # 20, Four of a kind    | 0
+
+  # 20, Four of a kind    | 0 |
   if any([len(sk := [s for s in sh0 if s == c]) == 4 for c in kinds]):
     return [20, sk[0]]
-  # 19, Full House        | 1
+
+  # 19, Full House        | 1 | max value in pair of 3 != globally max
   for c in kinds:
     if len(sk := [s for s in sh0 if s == c]) == 3 and len(set(sh0)) == 2:
       return [19, sk[0]]
-  # 18, Flush             | 2
+
+  # 18, Flush             | 2 | should resolve fine with highCardV
   if any([len([1 for m in sh1 if m == x]) == 5 for x in suits]):
     return [18]
-  # 17, Straight          | 31
+
+  # 17, Straight          | 31 | all ints so max(), or highCardV() are same
   if all([o.isnumeric() for o in h0]) and int(sh0[-1]) == int(sh0[0]) + 4:
     return [17, max(sh0)]
-  # 16, Three of a kind   | 33 
+
+  # 16, Three of a kind   | 33 | max in a 3item pair != globally max
   for c in kinds:
     if len(sk := [s for s in sh0 if s == c]) == 3:
       return [16, highV(sk)]
-  # 15, Two Pairs         | 80
+
+  # 15, Two Pairs         | 80 | max value != max value in pairs
   if sum([len([1 for s in sh0 if s == c]) == 2 for c in kinds]) == 2:
     return [15, highV(sh0)]
-  # 14, One Pair          | 786
+
+  # 14, One Pair          | 786 | should do as pair value comparison is done
   for c in kinds:
-    pv = [s for s in sh0 if s == c]
-    if len(pv) == 2:
-      return [14, kinds.index(pv[0])]
+    if len(pair := [s for s in sh0 if s == c]) == 2:
+      return [14, kinds.index(pair[0])]
   # 0-12, highest card    | 482 + 362 + 287 + 190 + 148 + 119 + 88 + 68 + 69 + 68 + 64 + 
   return [[hcard[0] for hcard in enumerate(kinds) if hcard[1] in sh0][-1]]
 
@@ -72,12 +79,14 @@ def euler_54(fname):
   with open(fname) as f:
     poker_hands = f.read().split('\n')[:-1]
     poker_hands = [p.split() for p in poker_hands]
+
   for h in poker_hands:
     won = winner(h)
     if won == 1: p1_wins += 1
     else: p2_wins += 1
     print(won)
   return (f'p1_wins: {p1_wins}, p2_wins:{p2_wins}')
+
 print(euler_54('data/p054_poker.txt'))
 # print(euler_54('data/p054_poker_test.txt'))
 
