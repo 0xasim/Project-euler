@@ -9,11 +9,13 @@ def rank_a_hand(hand, h0, h1):
   sh1C = Counter(sh1)
   pairs, three, fours = [[i for i in sh0C if sh0C[i] == j] for j in range(2, 5)]
   flush = all([o.isnumeric() for o in sh0]) and int(sh0[-1]) == int(sh0[0]) + 4
+  sameSuit = any([sh1C[i] == 5 for i in sh1C])
+
   # 22, Royal flush       | 0 |
   if sh0 == sorted(kinds):
     return [22]
   # 21, Straight flush    | 0 |
-  if flush and any([sh1C[i] == 5 for i in sh1C]):
+  if flush and sameSuit:
     return [21]
   # 20, Four of a kind    | 0 |
   if any(fours):
@@ -22,7 +24,7 @@ def rank_a_hand(hand, h0, h1):
   if any(three) and any(pairs):
     return [19, [three, pairs]]
   # 18, Flush             | 2 |
-  if any([sh1C[i] == 5 for i in sh1C]):
+  if sameSuit:
     return [18]
   # 17, Straight          | 32 |
   if flush:
@@ -56,7 +58,6 @@ def highCardV(p1h0, p2h0):
     return np.where(p1i > p2i, 1, 2)
 
 def winner(play): 
-  global p1_wins, p2_wins
   assert len(play) == 10
   p1h, p2h = play[:5], play[5:]
   p1h0, p1h1 = [c[0] if c[0] != 'T' else '10' for c in p1h], [c[1] for c in p1h]
