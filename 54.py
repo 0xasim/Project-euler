@@ -6,15 +6,14 @@ from collections import Counter
 def rank_a_hand(hand, h0, h1):
   sh0, sh1 = sorted(h0), sorted(h1)
   sh0C = Counter(sh0)
-  fours =  [i for i in sh0C if sh0C[i] == 4]
-  three =  [i for i in sh0C if sh0C[i] == 3]
-  pairs =  [i for i in sh0C if sh0C[i] == 2]
+  sh1C = Counter(sh1)
+  pairs, three, fours = [[i for i in sh0C if sh0C[i] == j] for j in range(2, 5)]
+  flush = all([o.isnumeric() for o in sh0]) and int(sh0[-1]) == int(sh0[0]) + 4
   # 22, Royal flush       | 0 |
   if sh0 == sorted(kinds):
     return [22]
   # 21, Straight flush    | 0 |
-  if all([o.isnumeric() for o in sh0]) and int(sh0[-1]) == int(sh0[0]) + 4\
-      and any([all([p == q for p in sh1]) for q in suits]):
+  if flush and any([sh1C[i] == 5 for i in sh1C]):
     return [21]
   # 20, Four of a kind    | 0 |
   if any(fours):
@@ -23,11 +22,11 @@ def rank_a_hand(hand, h0, h1):
   if any(three) and any(pairs):
     return [19, [three, pairs]]
   # 18, Flush             | 2 |
-  if any([len([1 for m in sh1 if m == x]) == 5 for x in suits]):
+  if any([sh1C[i] == 5 for i in sh1C]):
     return [18]
   # 17, Straight          | 32 |
-  if all([o.isnumeric() for o in sh0]) and int(sh0[-1]) == int(sh0[0]) + 4:
-    return [17, highV(sh0)]
+  if flush:
+    return [17]
   # 16, Three of a kind   | 33 |
   if any(three):
     return [16, highV(three)]
