@@ -44,7 +44,6 @@ def rank_a_hand(hand, h0, h1):
 def highV(h0):
   if type(h0) != list: h0 = list(h0)
   return [l[0] for l in enumerate(kinds) if l[1] in h0][-1]
-print(highV(['5','3']) > highV(['J', 'Q']))
 
 import numpy as np
 def highCardV(p1h0, p2h0):
