@@ -1,9 +1,8 @@
-kinds = '123456789TJQKA' # 14 Kinds
-suits = 'CDHS'          # 04 Suits
+kinds = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'] # 14 kinds
+suits = 'CDHS'  # 4 Suits
 
 from collections import Counter
 def rank_a_hand(hand, h0, h1):
-  h0 = [i if i != 'T' else '10' for i in h0]
   sh0, sh1 = sorted(h0), sorted(h1)
   # 22, Royal flush       | 0 |
   if sh0 == sorted(kinds):
@@ -42,15 +41,12 @@ def rank_a_hand(hand, h0, h1):
   return [[hcard[0] for hcard in enumerate(kinds) if hcard[1] in sh0][-1]]
 
 def highV(h0):
-  h0 = [i if i != '10' else 'T' for i in h0]
   if type(h0) != list: h0 = list(h0)
   return [l[0] for l in enumerate(kinds) if l[1] in h0][-1]
 print(highV(['5','3']) > highV(['J', 'Q']))
 
 import numpy as np
 def highCardV(p1h0, p2h0):
-  p1h0 = [i if i != '10' else 'T' for i in p1h0]
-  p120 = [i if i != '10' else 'T' for i in p2h0]
   for k in kinds:
     p1i, p1 = [k for k in enumerate(kinds) if k[1] in p1h0][-1]
     p2i, p2 = [k for k in enumerate(kinds) if k[1] in p2h0][-1]
@@ -64,8 +60,8 @@ def winner(play):
   global p1_wins, p2_wins
   assert len(play) == 10
   p1h, p2h = play[:5], play[5:]
-  p1h0, p1h1 = [c[0] for c in p1h], [c[1] for c in p1h]
-  p2h0, p2h1 = [c[0] for c in p2h], [c[1] for c in p2h]
+  p1h0, p1h1 = [c[0] if c[0] != 'T' else '10' for c in p1h], [c[1] for c in p1h]
+  p2h0, p2h1 = [c[0] if c[0] != 'T' else '10' for c in p2h], [c[1] for c in p2h]
 
   r1 = rank_a_hand(p1h, p1h0, p1h1)
   r2 = rank_a_hand(p2h, p2h0, p2h1)
