@@ -1,9 +1,13 @@
 kinds = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'] # 14 kinds
 suits = 'CDHS'  # 4 Suits
+revKind = dict((k, 0) for k in kinds)
 
 from collections import Counter
 def rank_a_hand(hand, h0, h1):
   sh0, sh1 = sorted(h0), sorted(h1)
+  sh0C = Counter(sh0)
+  three =  [i for i in sh0C if sh0C[i] == 3]
+  pairs =  [i for i in sh0C if sh0C[i] == 2]
   # 22, Royal flush       | 0 |
   if sh0 == sorted(kinds):
     return [22]
@@ -14,10 +18,9 @@ def rank_a_hand(hand, h0, h1):
   # 20, Four of a kind    | 0 |
   if any([len(sk := [s for s in sh0 if s == c]) == 4 for c in kinds]):
     return [20, sk[0]]
-  # 19, Full House        | 1 |  globally max max != value of pair of 3
-  for c in kinds:
-    if len(tk := [s for s in sh0 if s == c]) == 3 and len(set(sh0)) == 2:
-      return [19, kinds.index(tk[0])]
+  # 19, Full House        | 2 |  globally max max != value of pair of 3
+  if any(three) and any(pairs):
+    return [19, [three, pairs]]
   # 18, Flush             | 2 | should resolve fine with highCardV
   if any([len([1 for m in sh1 if m == x]) == 5 for x in suits]):
     return [18]
@@ -25,20 +28,16 @@ def rank_a_hand(hand, h0, h1):
   if all([o.isnumeric() for o in sh0]) and int(sh0[-1]) == int(sh0[0]) + 4:
     return [17, max(sh0)]
   # 16, Three of a kind   | 33 | max in a 3item pair != globally max
-  for c in kinds:
-    if len(sk := [s for s in sh0 if s == c]) == 3:
-      return [16, kinds.index(sk[0])]
+  if any(three):
+    return [16, highV(three)]
   # 15, Two Pairs         | 101 | max value != max value in pairs
-  sh0Count = Counter(sh0)
-  pairs =  [i for i in sh0Count if sh0Count[i] == 2]
   if len(pairs) == 2:
     return [15, highV(pairs)]
   # 14, One Pair          | 825 | should do as pair value comparison is done
   elif len(pairs) == 1:
     return [14, highV(pairs)]
-  # 0-13, highest card    | 482 + 362 + 287 + 190 + 148 + 119 + 88 + 68 + 69 + 68 + 64 + 
-  #                             | essentially doing what highCardV does
-  return [[hcard[0] for hcard in enumerate(kinds) if hcard[1] in sh0][-1]]
+  # 0-13, highest card    | 482 + 362 + 287 + 190 + 148 + 119 + 88 + 68 + 69 + 68 + 64 + ...
+  return [highV(sh0)]
 
 def highV(h0):
   if type(h0) != list: h0 = list(h0)
