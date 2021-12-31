@@ -1,12 +1,16 @@
-kinds = '123456789JQKA' # 13 Kinds
+kinds = '123456789TJQKA' # 14 Kinds
 suits = 'CDHS'          # 04 Suits
 
+from collections import Counter
 def rank_a_hand(hand, h0, h1):
+  h0 = [i if i != 'T' else '10' for i in h0]
   sh0, sh1 = sorted(h0), sorted(h1)
-  # 22, Royal flush       | 0 | not possible because there is no 10
+  # 22, Royal flush       | 0 |
+  if sh0 == sorted(kinds):
+    return [22]
 
   # 21, Straight flush    | 0 |
-  if all([o.isnumeric() for o in h0]) and int(sh0[-1]) == int(sh0[0]) + 4\
+  if all([o.isnumeric() for o in sh0]) and int(sh0[-1]) == int(sh0[0]) + 4\
       and any([all([p == q for p in sh1]) for q in suits]):
     return [21]
 
@@ -14,44 +18,48 @@ def rank_a_hand(hand, h0, h1):
   if any([len(sk := [s for s in sh0 if s == c]) == 4 for c in kinds]):
     return [20, sk[0]]
 
-  # 19, Full House        | 1 | max value in pair of 3 != globally max
+  # 19, Full House        | 1 |  globally max max != value of pair of 3
   for c in kinds:
-    if len(sk := [s for s in sh0 if s == c]) == 3 and len(set(sh0)) == 2:
-      return [19, sk[0]]
+    if len(tk := [s for s in sh0 if s == c]) == 3 and len(set(sh0)) == 2:
+      return [19, kinds.index(tk[0])]
 
   # 18, Flush             | 2 | should resolve fine with highCardV
   if any([len([1 for m in sh1 if m == x]) == 5 for x in suits]):
     return [18]
 
-  # 17, Straight          | 31 | all ints so max(), or highCardV() are same
-  if all([o.isnumeric() for o in h0]) and int(sh0[-1]) == int(sh0[0]) + 4:
+  # 17, Straight          | 32 | all ints so max(), or highCardV() are same
+  if all([o.isnumeric() for o in sh0]) and int(sh0[-1]) == int(sh0[0]) + 4:
     return [17, max(sh0)]
 
   # 16, Three of a kind   | 33 | max in a 3item pair != globally max
   for c in kinds:
     if len(sk := [s for s in sh0 if s == c]) == 3:
-      return [16, highV(sk)]
+      return [16, kinds.index(sk[0])]
 
-  # 15, Two Pairs         | 80 | max value != max value in pairs
-  if sum([len([1 for s in sh0 if s == c]) == 2 for c in kinds]) == 2:
-    return [15, highV(sh0)]
+  # 15, Two Pairs         | 101 | max value != max value in pairs
+  sh0Count = Counter(sh0)
+  pairs =  [i for i in sh0Count if sh0Count[i] == 2]
+  if len(pairs) == 2:
+    return [15, highV(pairs)]
 
-  # 14, One Pair          | 786 | should do as pair value comparison is done
-  for c in kinds:
-    if len(pair := [s for s in sh0 if s == c]) == 2:
-      return [14, kinds.index(pair[0])]
-  # 0-12, highest card    | 482 + 362 + 287 + 190 + 148 + 119 + 88 + 68 + 69 + 68 + 64 + 
+  # 14, One Pair          | 825 | should do as pair value comparison is done
+  elif len(pairs) == 1:
+    return [14, highV(pairs)]
+
+  # 0-13, highest card    | 482 + 362 + 287 + 190 + 148 + 119 + 88 + 68 + 69 + 68 + 64 + 
   #                             | essentially doing what highCardV does
   return [[hcard[0] for hcard in enumerate(kinds) if hcard[1] in sh0][-1]]
 
 def highV(h0):
+  h0 = [i if i != '10' else 'T' for i in h0]
   if type(h0) != list: h0 = list(h0)
-  # return max([kinds.index(h) for h in h0])
   return [l[0] for l in enumerate(kinds) if l[1] in h0][-1]
 print(highV(['5','3']) > highV(['J', 'Q']))
 
 import numpy as np
 def highCardV(p1h0, p2h0):
+  p1h0 = [i if i != '10' else 'T' for i in p1h0]
+  p120 = [i if i != '10' else 'T' for i in p2h0]
   for k in kinds:
     p1i, p1 = [k for k in enumerate(kinds) if k[1] in p1h0][-1]
     p2i, p2 = [k for k in enumerate(kinds) if k[1] in p2h0][-1]
@@ -90,7 +98,5 @@ def euler_54(fname):
 
 print(euler_54('data/p054_poker.txt'))
 # print(euler_54('data/p054_poker_test.txt'))
-
-
 
 
