@@ -8,14 +8,14 @@ def rank_a_hand(hand, h0, h1):
   sh0C = Counter(sh0)
   sh1C = Counter(sh1)
   pairs, three, fours = [[i for i in sh0C if sh0C[i] == j] for j in range(2, 5)]
-  flush = all([o.isnumeric() for o in sh0]) and int(sh0[-1]) == int(sh0[0]) + 4
-  sameSuit = any([sh1C[i] == 5 for i in sh1C])
+  consec = all([o.isnumeric() for o in sh0]) and int(sh0[-1]) == int(sh0[0]) + 4
+  sameSuit = [sh1C[i] for i in sh1C if sh1C[i] == 5]
 
   # 22, Royal flush       | 0 |
-  if sh0 == sorted(kinds):
+  if sorted(kinds) == sh0:
     return [22]
   # 21, Straight flush    | 0 |
-  if flush and sameSuit:
+  if any(sameSuit) and consec:
     return [21]
   # 20, Four of a kind    | 0 |
   if any(fours):
@@ -24,10 +24,10 @@ def rank_a_hand(hand, h0, h1):
   if any(three) and any(pairs):
     return [19, [three, pairs]]
   # 18, Flush             | 2 |
-  if sameSuit:
+  if any(sameSuit):
     return [18]
   # 17, Straight          | 32 |
-  if flush:
+  if consec:
     return [17]
   # 16, Three of a kind   | 33 |
   if any(three):
@@ -36,7 +36,7 @@ def rank_a_hand(hand, h0, h1):
   if len(pairs) == 2:
     return [15, highV(pairs)]
   # 14, One Pair          | 825 |
-  elif len(pairs) == 1:
+  if len(pairs) == 1:
     return [14, highV(pairs)]
   # 0-13, highest card    | 482 + 362 + 287 + 190 + 148 + 119 + 88 + 68 + 69 + 68 + 64 + ...
   return [highV(sh0)]
