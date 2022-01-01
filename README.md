@@ -1,4 +1,4 @@
-Program code containing my solutions to the Project Euler math problems.
+Program code containing my solutions for the Project Euler math problems.
 
 - python3 --version
 > Python 3.10.1
