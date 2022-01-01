@@ -11,7 +11,6 @@ def rank_a_hand(h0, h1):
   consec = all([o.isnumeric() for o in h0]) and not any([True for i in h0C if h0C[i] > 1])\
       and (sh0 := [str(j) for j in sorted([int(i) for i in h0])])\
       and int(sh0[-1]) == int(sh0[0]) + 4
-  print(h0C, h0, consec, not any([True for i in h0C if h0C[i] > 1]))
   sameSuit = [h1C[i] for i in h1C if h1C[i] == 5]
 
   # 22, Royal flush       | 1 |
@@ -46,6 +45,7 @@ def rank_a_hand(h0, h1):
   return [highV(h0)[0], highV(h0)[1:]]
 
 highV = lambda h0: [l[0] for l in enumerate(kinds) if l[1] in h0][::-1]
+
 import numpy as np
 def highCardV(p1h0, p2h0):
   for k in kinds:
@@ -60,14 +60,15 @@ def highCardV(p1h0, p2h0):
 def winner(p1, p2): 
   r1 = rank_a_hand(p1[0], p1[1])
   r2 = rank_a_hand(p2[0], p2[1])
-  print(r1, r2, end ='\n')
-  if r1 > r2: return 1
-  elif r2 > r1: return 2
+  print(f'r1, r2, {r1, r2}')
+  if r1 != r2: return np.where(r1 > r2, 1, 2)
   print('comparing high '*5)
   return highCardV(p1[0], p2[0])
 
-dshire_winner = lambda play: np.where(dshire.hand_rank(play[:5]) >\
-    dshire.hand_rank(play[5:]), 1, 2)
+def dshire_winner(play):
+  hr1, hr2 = dshire.hand_rank(play[:5]) , dshire.hand_rank(play[5:])
+  print(f'hr1, hr2 {hr1, hr2}')
+  return np.where(hr1 > hr2, 1, 2)
 
 def euler_54(fname):
   p1_wins, p2_wins = 0, 0
@@ -82,10 +83,15 @@ def euler_54(fname):
     p1 = [c[0] if c[0] != 'T' else '10' for c in p1h], [c[1] for c in p1h]
     p2 = [c[0] if c[0] != 'T' else '10' for c in p2h], [c[1] for c in p2h]
     my_winner = winner(p1, p2)
-    # print(my_winner)
+    if my_winner == 1: p1_wins += 1
+    else: p2_wins += 1
     ds_winner = dshire_winner(play)
+    if ds_winner == 1: p1_ds_wins += 1
+    else: p2_ds_wins += 1
     print(my_winner, ds_winner, pI+1)
-    assert my_winner == ds_winner
+    # assert my_winner == ds_winner
+  print(p1_wins, p2_wins)
+  print(p1_ds_wins, p2_ds_wins)
 
 euler_54('data/p054_poker.txt')
 # euler_54('data/p054_poker_test.txt')
