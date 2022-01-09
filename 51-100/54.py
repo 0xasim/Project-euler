@@ -93,7 +93,7 @@ def euler_54(fname):
   print(p1_wins, p2_wins)
   print(p1_ds_wins, p2_ds_wins)
 
-euler_54('data/p054_poker.txt')
+euler_54('../data/p054_poker.txt')
 # euler_54('data/p054_poker_test.txt')
 
 

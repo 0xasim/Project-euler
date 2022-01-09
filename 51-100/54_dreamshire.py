@@ -1,6 +1,6 @@
 
 from collections import Counter
-hands = (line.split() for line in open('data/p054_poker.txt'))
+hands = (line.split() for line in open('../data/p054_poker.txt'))
 
 values = {r:i for i,r in enumerate('23456789TJQKA', 2)}
 straights = [(v, v-1, v-2, v-3, v-4) for v in range(14, 5, -1)] + [(14, 5, 4, 3, 2)]
