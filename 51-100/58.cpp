@@ -1,5 +1,5 @@
-// Note:
-//    Not my solution; grabbed it from projecteuler problem 58 thread to study it.
+// Credit Note: Not my solution; grabbed it from projecteuler problem_58 thread to study it.
+//    https://projecteuler.net/action=redirect;post_id=1352
 #include <stdio.h>
 
 int apower(int a, int n, int mod){
