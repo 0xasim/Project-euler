@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <range/v3/all.hpp>
+#include <v3/all.hpp>
 using namespace std;
 
 string * get_file(string fname) {
