@@ -1,7 +1,10 @@
 package main
 import (
 	"os"
-	"fmt"
+	// "fmt"
+	"strconv"
+	// "bytes"
+	// "reflect"
 )
 
 func readFile(fname string) (int, []byte) {
@@ -12,21 +15,24 @@ func readFile(fname string) (int, []byte) {
 	return count, data
 }
 
-func splitStr(data string, delimiter string) {
-	var oneVal string
+func splitStr(data []byte, delimiter byte) []int {
+  two_dim := make([]int, len(data)/2)
+	var x int = 0
+  var start int = 0
 	for i := 0; i < len(data); i++ {
-		var iChar string = string(data[i])
-		if delimiter == iChar {
-
-		} else {
-			oneVal += iChar
+		if delimiter == data[i] {
+      two_dim[x], _ = strconv.Atoi(string(data[start:i]))
+			start = i+1
+			x++
 		}
 	}
-	fmt.Printf("%s\n%s%d\n", delimiter, data, len(data))
+  two_dim[x], _ = strconv.Atoi(string(data[start:start+2]))
+  return two_dim[:x+1]
 }
 
 func main() {
 	_ , data := readFile("/Users/dude/fun/project_euler/data/p059_cipher.txt")
-	splitStr(string(data), ",")
+  splitted := splitStr(data, []byte(",")[0])
+  println(splitted)
 }
 
