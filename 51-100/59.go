@@ -40,41 +40,41 @@ func stringToBin(s string) string {
   return binString
 }
 func xor(b1 byte, b2 byte) byte {
-  if b1 != b2 {
-    return 1
-  } 
+  if b1 != b2 { return 1 } 
   return 0
 }
 func decrypt(data []int, key string){
   bin_key := stringToBin(key)
   var l int = 0
   for o := range data {
+    var rbuffer [10]byte
     bin_d1 := strconv.FormatInt(int64(data[o]), 2)
     for p := range bin_d1 {
       bin_d2 := bin_d1[p]
       result := xor(bin_d2, bin_key[l])
-      fmt.Printf("%b,%b: %b\t", bin_d2, bin_key[l], result)
+      rbuffer[p] = result
+      // fmt.Printf("%b,%b: %b\t", bin_d2, bin_key[l], result)
       l++
       if l > len(bin_key)-1 { l = 0 }
     }
-    println()
+    // https://stackoverflow.com/questions/28040896/why-can-not-convert-sizebyte-to-string-in-go
+    sbuffer, _ := strconv.Atoi(string(rbuffer[:]))
+    fmt.Printf("%d ", sbuffer)
   }
 }
 func main() {
 	_ , data := readFile("/Users/dude/fun/project_euler/data/p059_cipher.txt")
   splitted := splitStr(data, []byte(",")[0])
   alph := "abcdefghijklmnopqrstuvwxyz"
-  println(alph)
+  Use(splitted)
+  decrypt(splitted, "abc")
   for u := range alph {
     for v := range alph {
       for w := range alph {
-        // t := alph[u]+alph[v]+alph[w]
-        Use(v,w)
-        fmt.Printf("%x ", alph[u])
-        //decrypt(splitted, t)
+        t := string(alph[u])+string(alph[v])+string(alph[w])
+        Use(t)
       }
     }
   }
-  Use(splitted)
 }
 
