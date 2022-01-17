@@ -32,23 +32,32 @@ func splitStr(data []byte, delimiter byte) []int {
   two_dim[x], _ = strconv.Atoi(string(data[start:start+2]))
   return two_dim[:x+1]
 }
-func stringToBin(s string) string {
+func string2bin(s string) string {
   var binString string
   for _, c := range s {
     binString = fmt.Sprintf("%s%b", binString, c)
   }
   return binString
 }
+func bin2string(b []byte) string {
+  var str string
+  for _, c := range b {
+    str = fmt.Sprintf("%b%s", b, c)
+  }
+  return str
+}
 func xor(b1 byte, b2 byte) byte {
   if b1 != b2 { return 1 } 
   return 0
 }
 func decrypt(data []int, key string){
-  bin_key := stringToBin(key)
+  bin_key := string2bin(key)
   var l int = 0
   for o := range data {
-    var rbuffer [10]byte
-    bin_d1 := strconv.FormatInt(int64(data[o]), 2)
+    // bin_d1 := strconv.FormatInt(int64(data[o]), 2)
+    bin_d1 := string2bin(string(data[o]))
+    dLen := len(bin_d1)
+    rbuffer := make([]byte, dLen)
     for p := range bin_d1 {
       bin_d2 := bin_d1[p]
       result := xor(bin_d2, bin_key[l])
@@ -58,8 +67,11 @@ func decrypt(data []int, key string){
       if l > len(bin_key)-1 { l = 0 }
     }
     // https://stackoverflow.com/questions/28040896/why-can-not-convert-sizebyte-to-string-in-go
-    sbuffer, _ := strconv.Atoi(string(rbuffer[:]))
-    fmt.Printf("%d ", sbuffer)
+    // sbuffer, _ := strconv.Atoi(string(rbuffer[:]))
+    sbuffer := bin2string(rbuffer)
+    fmt.Printf("%d %s %v\t", data[o], bin_d1, sbuffer)
+    fmt.Printf("%b ", rbuffer)
+    Use(sbuffer)
   }
 }
 func main() {
