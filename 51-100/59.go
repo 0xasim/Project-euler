@@ -17,6 +17,13 @@ func readFile(fname string) (int, []byte) {
 	fs, _ := file.Stat()
 	data := make([]byte, fs.Size())
 	count, _ := file.Read(data)
+  i := 0
+  print(data)
+  print("\nprinting data start\n")
+	for i=0; i<3; i++ {
+    print(data[i])
+  }
+  print("\nprinting data end")
 	return count, data
 }
 func splitStr(data []byte, delimiter byte) []int {
@@ -41,9 +48,8 @@ func string2bin(s string) string {
 }
 func bin2string(b []byte) string {
   var str string
-  for _, c := range b {
-    str = fmt.Sprintf("%b%s", b, c)
-  }
+  str = fmt.Sprintf("%x", b)
+  // str = rune(b)
   return str
 }
 func xor(b1 byte, b2 byte) byte {
@@ -52,8 +58,13 @@ func xor(b1 byte, b2 byte) byte {
 }
 func decrypt(data []int, key string){
   bin_key := string2bin(key)
+  print("\n"+key)
+  print("\n"+bin_key)
+  fmt.Printf("\n")
   var l int = 0
-  for o := range data {
+  // for o := range data {
+  o := 0
+  for o=0; o<=1; o++ {
     // bin_d1 := strconv.FormatInt(int64(data[o]), 2)
     bin_d1 := string2bin(string(data[o]))
     dLen := len(bin_d1)
@@ -66,11 +77,10 @@ func decrypt(data []int, key string){
       l++
       if l > len(bin_key)-1 { l = 0 }
     }
-    // https://stackoverflow.com/questions/28040896/why-can-not-convert-sizebyte-to-string-in-go
     // sbuffer, _ := strconv.Atoi(string(rbuffer[:]))
     sbuffer := bin2string(rbuffer)
-    fmt.Printf("%d %s %v\t", data[o], bin_d1, sbuffer)
-    fmt.Printf("%b ", rbuffer)
+    fmt.Printf("data[o]: %d,\tbin_d1: %s,\trbuffer: %b,\tsbuffer: %s\n",
+    data[o], bin_d1, rbuffer, sbuffer)
     Use(sbuffer)
   }
 }
