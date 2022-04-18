@@ -72,21 +72,41 @@ gen_n_primes = lambda n: [p for _, p in zip(range(n), gen_primes())]
 psieve_list = lambda lim: list(itertools.takewhile(lambda x: x < lim, psieve()))
 psieve_n = lambda n: [p for _, p in zip(range(n), psieve())]
 
+from functools import cache
+@cache
 class isprime:
-  def __init__(self, n, method = 'trialDiv'):
+  def __init__(self, n):
     self.n = n
-    self.method = method
-    self.bool = None
-    if self.method == 'trialDiv': self.bool = self.trialDiv()
+    self.bool = self.trialDiv()
     
   def __bool__(self):
     return self.bool
 
   def trialDiv(self):
-    if self.n <= 1: return False
-    for i in range(2, int(math.sqrt(self.n)) + 1):
+    # if self.n <= 1: return False
+    if self.n==2 or self.n==3: return True
+    if self.n%2==0 or self.n<2: return False
+    for i in range(3, int(math.sqrt(self.n)) + 1, 2):
       if self.n % i == 0: return False
     return True
+
+@cache
+def is_prime(n):
+  if n == 2 or n == 3: return True
+  if n < 2 or n%2 == 0: return False
+  if n < 9: return True
+  if n%3 == 0: return False
+  r = int(n**0.5)
+  # since all primes > 3 are of the form 6n ± 1
+  # start with f=5 (which is prime)
+  # and test f, f+2 for being prime
+  # then loop by 6. 
+  f = 5
+  while f <= r:
+    if n % f == 0: return False
+    if n % (f+2) == 0: return False
+    f += 6
+  return True
 
 if __name__ == '__main__':
   from utils import call
